@@ -1,88 +1,12 @@
+package Sudoku;
+
 import java.util.*;
-public class Board {
-    public static int[][] numbersOnBoard;
 
-    public Board(int[][] startingNumbers) {
-        numbersOnBoard = startingNumbers;
-    }
+import static Sudoku.Board.*;
+import static Sudoku.BoardUtils.*;
 
-    // Printing Methods
-    public static void printTemplate() {
-        int[][] template = new int[9][9];
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                template[i][j] = 0;
-            }
-        }
-        for (int[] x : template) {
-            System.out.println(Arrays.toString(x));
-        }
-    }
 
-    public static void printBoardState(Board board) {
-        int vertCounter = 0;
-        int horizCounter = 0;
-        for (int[] x : board.numbersOnBoard) {
-            for (int y : x) {
-                if (vertCounter == 3) {
-                    System.out.print("| ");
-                }
-                if (vertCounter == 6) {
-                    System.out.print("| ");
-                    vertCounter = -3;
-                }
-                if (y == 0) {
-                    System.out.print("* ");
-                } else {
-                    System.out.print(y + " ");
-                }
-                vertCounter++;
-            }
-            horizCounter++;
-            if (horizCounter == 3) {
-                System.out.println();
-                System.out.println("---------------------");
-            } else if (horizCounter == 6) {
-                System.out.println();
-                System.out.println("---------------------");
-            } else {
-                System.out.println();
-            }
-        }
-    }
-
-    public static void printBoardState(int[][] board) {
-        int vertCounter = 0;
-        int horizCounter = 0;
-        for (int[] x : board) {
-            for (int y : x) {
-                if (vertCounter == 3) {
-                    System.out.print("| ");
-                }
-                if (vertCounter == 6) {
-                    System.out.print("| ");
-                    vertCounter = -3;
-                }
-                if (y == 0) {
-                    System.out.print("* ");
-                } else {
-                    System.out.print(y + " ");
-                }
-                vertCounter++;
-            }
-            horizCounter++;
-            if (horizCounter == 3) {
-                System.out.println();
-                System.out.println("---------------------");
-            } else if (horizCounter == 6) {
-                System.out.println();
-                System.out.println("---------------------");
-            } else {
-                System.out.println();
-            }
-        }
-    }
-
+public class BoardTester {
     public static boolean validateSolution() {
         int[][] numbersMatrix = numbersOnBoard;
 
@@ -319,47 +243,5 @@ public class Board {
             }
         }
         return true;
-    }
-
-    // HELPER METHODS
-    public static void printMatrix(int[][]matrix) {
-        for (int[] x : matrix) {
-            for (int y : x) {
-                System.out.print(y + " ");
-            }
-            System.out.println();
-        }
-    }
-
-    public static void main(String[] args) {
-        int[][] original = new int[][]{
-                {3, 1, 2, 4, 5, 6, 7, 8, 9},
-                {1, 2, 3, 2, 2, 2, 2, 2, 2},
-                {0, 0, 4, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                {0, 0, 0, 0, 0, 0, 0, 0, 0}
-        };
-        System.out.println("DISCLAIMER: INDICES ARE 1-INDEXED");
-        int[][] normaltest = new int[][]{
-                {2, 9, 6, 3, 1, 8, 5, 7, 4},
-                {5, 8, 4, 9, 7, 2, 6, 1, 3},
-                {7, 1, 3, 6, 4, 5, 2, 8, 9},
-                {6, 2, 5, 8, 9, 7, 3, 4, 1},
-                {9, 3, 1, 4, 2, 6, 8, 5, 7},
-                {4, 7, 8, 5, 3, 1, 9, 2, 6},
-                {1, 6, 7, 2, 5, 3, 4, 9, 8},
-                {8, 5, 9, 7, 6, 4, 1, 3, 2},
-                {3, 4, 2, 1, 8, 9, 7, 6, 5},
-        };
-        Board normalTestBoard = new Board(normaltest);
-        //printBoardState(test);
-        //normalTestBoard.validateSolution();
-        normalTestBoard.validateSolution();
-
-
     }
 }

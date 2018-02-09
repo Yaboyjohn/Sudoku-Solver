@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d42dfd17-749f-4208-9f94-22c822ab5bbd" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/out/production/Sudoku Solver/Sudoku/Board.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/out/production/Sudoku Solver/Sudoku/BoardTester.class" afterPath="$PROJECT_DIR$/out/production/Sudoku Solver/Sudoku/BoardTester.class" />
-      <change beforePath="$PROJECT_DIR$/out/production/Sudoku Solver/Sudoku/BoardUtils.class" afterPath="$PROJECT_DIR$/out/production/Sudoku Solver/Sudoku/BoardUtils.class" />
       <change beforePath="$PROJECT_DIR$/src/Sudoku/Board.java" afterPath="$PROJECT_DIR$/src/Sudoku/Board.java" />
-      <change beforePath="$PROJECT_DIR$/src/Sudoku/BoardTester.java" afterPath="$PROJECT_DIR$/src/Sudoku/BoardTester.java" />
-      <change beforePath="$PROJECT_DIR$/src/Sudoku/BoardUtils.java" afterPath="$PROJECT_DIR$/src/Sudoku/BoardUtils.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,18 +17,29 @@
       <file leaf-file-name="Board.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Sudoku/Board.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2100">
-              <caret line="140" column="35" lean-forward="false" selection-start-line="140" selection-start-column="35" selection-end-line="140" selection-end-column="35" />
+            <state relative-caret-position="706">
+              <caret line="63" column="56" lean-forward="false" selection-start-line="63" selection-start-column="56" selection-end-line="63" selection-end-column="56" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#214#215#0" expanded="true" />
-                <element signature="e#262#263#0" expanded="true" />
-                <element signature="e#464#465#0" expanded="true" />
-                <element signature="e#516#517#0" expanded="true" />
-                <element signature="e#547#548#0" expanded="true" />
-                <element signature="e#586#587#0" expanded="true" />
-                <element signature="e#615#616#0" expanded="true" />
-                <element signature="e#669#670#0" expanded="true" />
+                <element signature="e#250#251#0" expanded="true" />
+                <element signature="e#298#299#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BoardStruct.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Sudoku/BoardStruct.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2625">
+              <caret line="175" column="5" lean-forward="false" selection-start-line="175" selection-start-column="5" selection-end-line="175" selection-end-column="5" />
+              <folding>
+                <element signature="e#269#270#0" expanded="true" />
+                <element signature="e#321#322#0" expanded="true" />
+                <element signature="e#352#353#0" expanded="true" />
+                <element signature="e#391#392#0" expanded="true" />
+                <element signature="e#420#421#0" expanded="true" />
+                <element signature="e#474#475#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -97,6 +102,7 @@
         <option value="$PROJECT_DIR$/src/Sudoku/BoardUtils.java" />
         <option value="$PROJECT_DIR$/src/Sudoku/BoardSolver.java" />
         <option value="$PROJECT_DIR$/src/Sudoku/BoardTester.java" />
+        <option value="$PROJECT_DIR$/src/Sudoku/BoardStruct.java" />
         <option value="$PROJECT_DIR$/src/Sudoku/Board.java" />
       </list>
     </option>
@@ -334,14 +340,8 @@
           <caret line="10" column="5" lean-forward="true" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#214#215#0" expanded="true" />
-            <element signature="e#262#263#0" expanded="true" />
-            <element signature="e#464#465#0" expanded="true" />
-            <element signature="e#516#517#0" expanded="true" />
-            <element signature="e#547#548#0" expanded="true" />
-            <element signature="e#586#587#0" expanded="true" />
-            <element signature="e#615#616#0" expanded="true" />
-            <element signature="e#669#670#0" expanded="true" />
+            <element signature="e#250#251#0" expanded="true" />
+            <element signature="e#298#299#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -398,20 +398,29 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sudoku/BoardStruct.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2625">
+          <caret line="175" column="5" lean-forward="false" selection-start-line="175" selection-start-column="5" selection-end-line="175" selection-end-column="5" />
+          <folding>
+            <element signature="e#269#270#0" expanded="true" />
+            <element signature="e#321#322#0" expanded="true" />
+            <element signature="e#352#353#0" expanded="true" />
+            <element signature="e#391#392#0" expanded="true" />
+            <element signature="e#420#421#0" expanded="true" />
+            <element signature="e#474#475#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Sudoku/Board.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2100">
-          <caret line="140" column="35" lean-forward="false" selection-start-line="140" selection-start-column="35" selection-end-line="140" selection-end-column="35" />
+        <state relative-caret-position="706">
+          <caret line="63" column="56" lean-forward="false" selection-start-line="63" selection-start-column="56" selection-end-line="63" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#214#215#0" expanded="true" />
-            <element signature="e#262#263#0" expanded="true" />
-            <element signature="e#464#465#0" expanded="true" />
-            <element signature="e#516#517#0" expanded="true" />
-            <element signature="e#547#548#0" expanded="true" />
-            <element signature="e#586#587#0" expanded="true" />
-            <element signature="e#615#616#0" expanded="true" />
-            <element signature="e#669#670#0" expanded="true" />
+            <element signature="e#250#251#0" expanded="true" />
+            <element signature="e#298#299#0" expanded="true" />
           </folding>
         </state>
       </provider>

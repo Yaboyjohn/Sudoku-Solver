@@ -28,7 +28,7 @@ public class BoardTester {
         return true;
     }
 
-    public static boolean validateIndividualRow(int[] row, int rowNumber) {
+    private static boolean validateIndividualRow(int[] row, int rowNumber) {
         int[] rowChecker = new int[9];
         for (int i = 0; i < row.length; i++) {
             int num = row[i];
@@ -51,7 +51,7 @@ public class BoardTester {
         return true;
     }
 
-    public static boolean validateIndividualColumns(int[][] board, int colNumber) {
+    private static boolean validateIndividualColumns(int[][] board, int colNumber) {
         // Col Array is used to print out faulty columns
         int[] colArray = new int[9];
 
@@ -82,7 +82,7 @@ public class BoardTester {
         return true;
     }
 
-    public static boolean validateSubMatrices(int[][] board) {
+    private static boolean validateSubMatrices(int[][] board) {
         // 1 2 3
         // 4 5 6
         // 7 8 9

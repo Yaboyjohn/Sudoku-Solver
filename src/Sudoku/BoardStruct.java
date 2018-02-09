@@ -3,6 +3,31 @@ package Sudoku;
 import java.util.Arrays;
 
 public class BoardStruct {
+    public static Row[] getAllRows(Board board) {
+        Row[] rowArr = new Row[9];
+        for (int i = 1; i < 10; i++) {
+            rowArr[i-1] = new Row(board, i);
+        }
+        return rowArr;
+    }
+
+    public static Column[] getAllColumns(Board board) {
+        Column[] colArr = new Column[9];
+        for (int i = 0; i < 9; i++) {
+            char c = (char) (i+65);
+            colArr[i] = new Column(board, c);
+        }
+        return colArr;
+    }
+
+    public static SubMatrix[] getAllSubMatrices(Board board) {
+        SubMatrix[] matArr = new SubMatrix[9];
+        for (int i = 1; i < 10; i++) {
+            matArr[i-1] = new SubMatrix(board, i);
+        }
+        return matArr;
+    }
+
     public static class Cell {
         char letter;
         int num;
@@ -25,13 +50,19 @@ public class BoardStruct {
     public static class Row {
         int rowNum;
         int[] values;
+        int numSolved;
         public Row(Board board, int num) {
             this.rowNum = num;
             try {
-                this.values = board.numbersOnBoard[num-1];
+                this.values = board.numbersOnBoard[num - 1];
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Invalid row number. Rows are 1-indexed");
                 this.values = null;
+            }
+            if (this.values != null) {
+                for (int val : this.values) {
+                    if (val != 0) this.numSolved++;
+                }
             }
         }
 
@@ -46,10 +77,16 @@ public class BoardStruct {
         int colNum;
         char colName;
         int[] values;
+        int numSolved;
         public Column(Board board, char c) {
             this.colNum = c - 'A';
             this.colName = c;
             this.values = getValues(board, colNum);
+            if (this.values != null) {
+                for (int val : this.values) {
+                    if (val != 0) this.numSolved++;
+                }
+            }
         }
 
         public int[] getValues(Board board, int colNum) {
@@ -75,9 +112,17 @@ public class BoardStruct {
     public static class SubMatrix {
         int matrixNum;
         int[][] values;
+        int numSolved;
         public SubMatrix(Board board, int num) {
             this.matrixNum = num;
             this.values = getValues(board, this.matrixNum);
+            if (this.values != null) {
+                for (int[] row : this.values) {
+                    for (int val : row) {
+                        if (val != 0) this.numSolved++;
+                    }
+                }
+            }
         }
 
         public void printSubMatrix() {
@@ -174,6 +219,4 @@ public class BoardStruct {
             return null;
         }
     }
-
-
 }

@@ -6,9 +6,15 @@ import static Sudoku.BoardUtils.*;
 
 public class Board {
     public static int[][] numbersOnBoard;
+    public Row[] rowArr;
+    public Column[] colArr;
+    public SubMatrix[] matArr;
 
     public Board(int[][] startingNumbers) {
         numbersOnBoard = startingNumbers;
+        this.rowArr = getAllRows(this);
+        this.colArr = getAllColumns(this);
+        this.matArr = getAllSubMatrices(this);
     }
 
     public Row getRow(int rowNum) {
@@ -59,9 +65,11 @@ public class Board {
         Board normalTestBoard = new Board(test);
         printBoardState(normalTestBoard);
         //r2.printRow();
-        Column colB = new Column(normalTestBoard, 'J');
+        Column colB = new Column(normalTestBoard, 'A');
         //colB.printCol();
-        SubMatrix s = new SubMatrix(normalTestBoard, 5);
+        SubMatrix s = new SubMatrix(normalTestBoard, 8);
         //validateSolution();
+        Row r2 = normalTestBoard.getRow(2);
+        System.out.println(s.numSolved);
     }
 }

@@ -55,36 +55,4 @@ public class BoardUtils {
             }
         }
     }
-
-    public static void printBoardState(int[][] board) {
-        int vertCounter = 0;
-        int horizCounter = 0;
-        for (int[] x : board) {
-            for (int y : x) {
-                if (vertCounter == 3) {
-                    System.out.print("| ");
-                }
-                if (vertCounter == 6) {
-                    System.out.print("| ");
-                    vertCounter = -3;
-                }
-                if (y == 0) {
-                    System.out.print("* ");
-                } else {
-                    System.out.print(y + " ");
-                }
-                vertCounter++;
-            }
-            horizCounter++;
-            if (horizCounter == 3) {
-                System.out.println();
-                System.out.println("---------------------");
-            } else if (horizCounter == 6) {
-                System.out.println();
-                System.out.println("---------------------");
-            } else {
-                System.out.println();
-            }
-        }
-    }
 }

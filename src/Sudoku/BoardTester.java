@@ -8,8 +8,6 @@ import static Sudoku.BoardUtils.*;
 
 public class BoardTester {
     public static boolean validateSolution() {
-        int[][] numbersMatrix = numbersOnBoard;
-
         // Rows Check
         for (int i = 0; i < numbersOnBoard.length; i++) {
             int[] row = numbersOnBoard[i];
@@ -226,7 +224,7 @@ public class BoardTester {
             }
         }
 
-        // Matrix 8
+        // Matrix 9
         int[][] matrix9 = new int[3][3];
         for (int row = 6; row < 9; row++) {
             for (int col = 6; col < 9; col++) {

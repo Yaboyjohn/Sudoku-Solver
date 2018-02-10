@@ -12,6 +12,19 @@ public class BoardUtils {
         }
     }
 
+    public static void printBucket(ArrayList<BoardStruct>[] bucket) {
+        for (int i = 0; i < 9; i++) {
+            if (bucket[i] != null) {
+                ArrayList<BoardStruct> arr = bucket[i];
+                for (BoardStruct bs : arr) {
+                    System.out.println("bucket: " + i + " " + bs.type + " " + bs.num + " " + bs.name);
+                }
+                System.out.println("Num structs in this bucket: " + arr.size());
+            }
+
+        }
+    }
+
     public static void printTemplate() {
         int[][] template = new int[9][9];
         for (int i = 0; i < 9; i++) {

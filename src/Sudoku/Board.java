@@ -3,6 +3,7 @@ import java.util.*;
 import static Sudoku.BoardTester.*;
 import static Sudoku.BoardStruct.*;
 import static Sudoku.BoardUtils.*;
+import static Sudoku.BoardSolver.*;
 
 public class Board {
     public static int[][] numbersOnBoard;
@@ -65,11 +66,10 @@ public class Board {
         Board normalTestBoard = new Board(test);
         printBoardState(normalTestBoard);
         //r2.printRow();
-        Column colB = new Column(normalTestBoard, 'A');
-        //colB.printCol();
+        Column colB = new Column(normalTestBoard, 'B');
+        //System.out.println(colB.numSolved);
         SubMatrix s = new SubMatrix(normalTestBoard, 8);
         //validateSolution();
-        Row r2 = normalTestBoard.getRow(2);
-        System.out.println(s.numSolved);
+        solve(normalTestBoard);
     }
 }

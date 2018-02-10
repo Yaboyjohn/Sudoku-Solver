@@ -1,20 +1,31 @@
 package Sudoku;
 
+import java.util.ArrayList;
+
 public class SubMatrix {
     int matrixNum;
     int[][] values;
     int numSolved;
+    ArrayList<Integer> missingNums = new ArrayList<>();
+    boolean[] found = new boolean[9];
     public SubMatrix(Board board, int num) {
         this.matrixNum = num;
         this.values = getValues(board, this.matrixNum);
         if (this.values != null) {
             for (int[] row : this.values) {
                 for (int val : row) {
-                    if (val != 0) this.numSolved++;
+                    if (val != 0)  {
+                        this.numSolved++;
+                        found[val-1] = true;
+                    }
                 }
             }
         }
+        for (int i = 0; i < 9; i++) {
+            if (!found[i]) missingNums.add(i+1);
+        }
     }
+
 
     public void printSubMatrix() {
         if (this.values != null) {

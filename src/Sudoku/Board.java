@@ -71,5 +71,6 @@ public class Board {
         SubMatrix s = new SubMatrix(normalTestBoard, 8);
         //validateSolution();
         solve(normalTestBoard);
+        SubMatrix r2 = normalTestBoard.getSubMatrix(1);
     }
 }

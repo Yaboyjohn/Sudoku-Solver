@@ -1,10 +1,13 @@
 package Sudoku;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Row {
     int rowNum;
     int[] values;
     int numSolved;
+    ArrayList<Integer> missingNums = new ArrayList<>();
+    boolean[] found = new boolean[9];
     public Row(Board board, int num) {
         this.rowNum = num;
         try {
@@ -15,8 +18,15 @@ public class Row {
         }
         if (this.values != null) {
             for (int val : this.values) {
-                if (val != 0) this.numSolved++;
+                if (val != 0)  {
+                    this.numSolved++;
+                    found[val-1] = true;
+                }
+
             }
+        }
+        for (int i = 0; i < 9; i++) {
+            if (!found[i]) missingNums.add(i+1);
         }
     }
 

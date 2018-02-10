@@ -1,4 +1,5 @@
 package Sudoku;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Column {
@@ -6,14 +7,22 @@ public class Column {
     char colName;
     int[] values;
     int numSolved;
+    ArrayList<Integer> missingNums = new ArrayList<>();
+    boolean[] found = new boolean[9];
     public Column(Board board, char c) {
         this.colNum = c - 'A' + 1;
         this.colName = c;
         this.values = getValues(board, colNum - 1);
         if (this.values != null) {
             for (int val : this.values) {
-                if (val != 0) this.numSolved++;
+                if (val != 0)  {
+                    this.numSolved++;
+                    found[val-1] = true;
+                }
             }
+        }
+        for (int i = 0; i < 9; i++) {
+            if (!found[i]) missingNums.add(i+1);
         }
     }
 

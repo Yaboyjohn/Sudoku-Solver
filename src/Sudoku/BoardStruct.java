@@ -37,29 +37,4 @@ public class BoardStruct {
         this.mat = mat;
         this.num = mat.matrixNum;
     }
-
-    public static Row[] getAllRows(Board board) {
-        Row[] rowArr = new Row[9];
-        for (int i = 1; i < 10; i++) {
-            rowArr[i-1] = new Row(board, i);
-        }
-        return rowArr;
-    }
-
-    public static Column[] getAllColumns(Board board) {
-        Column[] colArr = new Column[9];
-        for (int i = 0; i < 9; i++) {
-            char c = (char) (i+65);
-            colArr[i] = new Column(board, c);
-        }
-        return colArr;
-    }
-
-    public static SubMatrix[] getAllSubMatrices(Board board) {
-        SubMatrix[] matArr = new SubMatrix[9];
-        for (int i = 1; i < 10; i++) {
-            matArr[i-1] = new SubMatrix(board, i);
-        }
-        return matArr;
-    }
 }

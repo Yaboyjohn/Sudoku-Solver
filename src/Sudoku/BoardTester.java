@@ -4,31 +4,82 @@ import java.util.*;
 
 import static Sudoku.Board.*;
 import static Sudoku.BoardUtils.*;
+import static Sudoku.SubMatrix.*;
 
 
 public class BoardTester {
-    public static boolean validateSolution() {
+    public static boolean validateSolution(Board board) {
         // Rows Check
-        for (int i = 0; i < numbersOnBoard.length; i++) {
-            int[] row = numbersOnBoard[i];
+        for (int i = 0; i < board.numbersOnBoard.length; i++) {
+            int[] row = board.numbersOnBoard[i];
             if (!validateIndividualRow(row, i)) {
                 return false;
             }
         }
         // Columns Check
-        for (int j = 0; j < numbersOnBoard.length; j++) {
-            if (!validateIndividualColumns(numbersOnBoard, j)) {
+        for (int j = 0; j < board.numbersOnBoard.length; j++) {
+            if (!validateIndividualColumns(board.numbersOnBoard, j)) {
                 return false;
             }
         }
 
         // Matrices Check
-        validateSubMatrices(numbersOnBoard);
+        validateSubMatrices(board.numbersOnBoard);
         System.out.println("Good job! This is a valid sudoku solution");
         return true;
     }
 
-    private static boolean validateIndividualRow(int[] row, int rowNumber) {
+    public static int numPossiblSpotsInMatrix(Board board, int matNumber) {
+        int[][] mat = getValues(board, matNumber);
+        int numSpots = 0;
+        System.out.println("matrix: ");
+        BoardUtils.printMatrix(mat);
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                int num = mat[row][col];
+                if (num == 0) {
+                    numSpots++;
+                    continue;
+                }
+                else if (num < 0 || num > 9) {
+                    System.out.println("Number out of bounds");
+                    return -1;
+                }
+            }
+        }
+        return numSpots;
+    }
+
+    public static int numPossibleSpotsInCol(Board board, int colNum) {
+        int numSpots = 0;
+        for (int val : board.getColumn(colNum).values) {
+            if (val == 0) {
+                numSpots++;
+                continue;
+            }
+            else if (val < 0 || val > 9) {
+                System.out.println("Number out of bounds");
+                return -1;
+            }
+        }
+        return numSpots;
+    }
+
+    public static int numPossibleSpotsInRow(Board board,  int rowNum) {
+        int numSpots = 0;
+        for (int val : board.getRow(rowNum).values) {
+            if (val == 0) {
+                numSpots++;
+                continue;
+            } else if (val < 0 || val > 9) {
+                System.out.println("Number out of bounds");
+                return -1;
+            }
+        }
+        return numSpots;
+    }
+
+    public static boolean validateIndividualRow(int[] row, int rowNumber) {
         int[] rowChecker = new int[9];
         for (int i = 0; i < row.length; i++) {
             int num = row[i];
@@ -51,7 +102,8 @@ public class BoardTester {
         return true;
     }
 
-    private static boolean validateIndividualColumns(int[][] board, int colNumber) {
+    /** This is 0-indexed **/
+    public static boolean validateIndividualColumns(int[][] board, int colNumber) {
         // Col Array is used to print out faulty columns
         int[] colArray = new int[9];
 
@@ -82,7 +134,7 @@ public class BoardTester {
         return true;
     }
 
-    private static boolean validateSubMatrices(int[][] board) {
+    public static boolean validateSubMatrices(int[][] board) {
         // 1 2 3
         // 4 5 6
         // 7 8 9

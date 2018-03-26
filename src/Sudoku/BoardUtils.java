@@ -17,9 +17,9 @@ public class BoardUtils {
             if (bucket[i] != null) {
                 ArrayList<BoardStruct> arr = bucket[i];
                 for (BoardStruct bs : arr) {
-                    System.out.println("bucket: " + i + " " + bs.type + " " + bs.num + " " + bs.name);
+                    System.out.println("BUCKET: " + i + " = " + (i+1) + " solved | " + bs.type + " " + bs.num + " " + bs.name);
                 }
-                System.out.println("Num structs in this bucket: " + arr.size());
+                System.out.println("Num structs in bucket: " + i + " | " +  arr.size());
             }
 
         }

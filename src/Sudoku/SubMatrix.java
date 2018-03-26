@@ -35,6 +35,14 @@ public class SubMatrix {
      */
     public void update(int rowNum, int colNum, int newNum) {
         this.values[rowNum % 3][colNum % 3] = newNum;
+        this.numSolved = 0;
+        for (int i = 0; i < this.values.length; i++) {
+            for (int j = 0; j < this.values[0].length; j++) {
+                if (this.values[i][j] != 0) {
+                    this.numSolved++;
+                }
+            }
+        }
     }
 
 

@@ -1,4 +1,5 @@
 package Sudoku;
+import java.lang.reflect.Array;
 import java.util.*;
 import static Sudoku.BoardTester.*;
 import static Sudoku.BoardStruct.*;
@@ -34,8 +35,6 @@ public class Board {
     }
 
     public Column getColumn(int colNum) {
-        char c = (char) (colNum+64);
-        Column col = new Column(this, c);
         return colArr[colNum-1];
 
     }
@@ -51,13 +50,32 @@ public class Board {
      * @param rowNum 0-indexed
      * @param newNum
      */
-    public void setColumn(int colNum, Column col, int rowNum, int newNum) {
+    public void updateColumn(int colNum, Column col, int rowNum, int newNum) {
         this.colArr[colNum-1] = col;
         Row row = this.rowArr[rowNum];
         row.values[colNum-1] = newNum;
+        row.numSolved++;
         SubMatrix mat = getConflictingMatrix(col, getRow(rowNum+1));
         mat.update(rowNum, colNum-1, newNum);
         this.matArr[mat.matrixNum-1] = mat;
+        System.out.println("#####" + mat.numSolved + "#####");
+        // update num solved, missing nums/indices
+        Arrays.fill(col.found, 0, col.found.length, false);
+        col.numSolved = 0;
+        col.missingNumsIndices.clear();
+        col.missingNums.clear();
+        for (int i = 0; i < col.values.length; i++) {
+            int val = col.values[i];
+            if (val != 0)  {
+                col.numSolved++;
+                col.found[val-1] = true;
+            } else {
+                col.missingNumsIndices.add(i);
+            }
+        }
+        for (int i = 0; i < 9; i++) {
+            if (!col.found[i]) col.missingNums.add(i+1);
+        }
     }
 
 
@@ -115,15 +133,15 @@ public class Board {
         int rowNum = row.rowNum;
         if (colNum <= 3) {
             if (rowNum <= 3) return getSubMatrix(1);
-            else if (rowNum < 6) return getSubMatrix(4);
+            else if (rowNum <= 6) return getSubMatrix(4);
             else return getSubMatrix(7);
         } else if (colNum < 6) {
             if (rowNum <= 3) return getSubMatrix(2);
-            else if (rowNum < 6) return getSubMatrix(5);
+            else if (rowNum <= 6) return getSubMatrix(5);
             else return getSubMatrix(8);
         } else {
             if (rowNum <= 3) return getSubMatrix(3);
-            else if (rowNum < 6) return getSubMatrix(6);
+            else if (rowNum <= 6) return getSubMatrix(6);
             else return getSubMatrix(9);
         }
     }
@@ -160,12 +178,17 @@ public class Board {
         // check the conflicting row and each of the associated matrices to see if we can remove some numbers from missingNums of col
         Row conflictingRow = this.getRow(missingNumIndex+1);
         SubMatrix conflictingMatrix = getConflictingMatrix(col, conflictingRow);
+        // if we arent able to narrow down the potentialValList to 1, return the original potValList with all possibilities
+        ArrayList<Integer> copy = this.clone(potentialValList);
 
         // remove potential val from the list
-        if (conflictingMatrix.contains(potentialVal) || conflictingRow.contains(potentialVal)) {
+        if (conflictingMatrix.contains(potentialVal) || conflictingRow.contains(potentialVal) || col.contains(potentialVal)) {
             potentialValList.remove(new Integer(potentialVal));
+            if (potentialValList.size() == 1) {
+                return potentialValList;
+            }
         }
-        return potentialValList;
+        return copy;
     }
 
     public static void main(String[] args) {

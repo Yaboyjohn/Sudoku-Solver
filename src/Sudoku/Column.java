@@ -35,9 +35,10 @@ public class Column {
         linkAssociateMatricesToColumn(board);
     }
 
+    // num is 0-indexed??
     public Column(int[] vals, int num) {
         this.colNum = num;
-        this.colName = (char) (num+65);
+        this.colName = (char) (num+64);
         this.values = vals;
         if (this.values != null) {
             for (int val : this.values) {
@@ -48,7 +49,14 @@ public class Column {
             }
         }
         for (int i = 0; i < 9; i++) {
-            if (!found[i]) missingNums.add(i+1);
+            if (!found[i]) {
+                missingNums.add(i+1);
+            }
+        }
+        for (int i = 0; i < 9; i++) {
+            if (this.values[i] == 0) {
+                missingNumsIndices.add(i);
+            }
         }
     }
 

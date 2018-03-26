@@ -12,6 +12,7 @@ public class BoardStruct {
     SubMatrix mat;
     int num;
     char name = ' ';
+    int bucketIndex;
 
     public BoardStruct(Row row) {
         this.type = TYPE.ROW;

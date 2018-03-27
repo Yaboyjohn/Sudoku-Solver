@@ -1,11 +1,21 @@
 package Sudoku;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SubMatrix {
+    public class indexStruct {
+        public indexStruct(int row, int col) {
+            this.rowIndex = row;
+            this.colIndex = col;
+        }
+        int rowIndex;
+        int colIndex;
+    }
     int matrixNum;
     int[][] values;
     int numSolved;
+    ArrayList<indexStruct> missingNumsIndices = new ArrayList<>();
     ArrayList<Integer> missingNums = new ArrayList<>();
     private boolean[] found = new boolean[9];
 
@@ -13,11 +23,15 @@ public class SubMatrix {
         this.matrixNum = num;
         this.values = getValues(board, this.matrixNum);
         if (this.values != null) {
-            for (int[] row : this.values) {
-                for (int val : row) {
-                    if (val != 0)  {
+            for (int i = 0; i < this.values.length; i++) {
+                for (int j = 0; j < this.values[0].length; j++) {
+                    int val = values[i][j];
+                    if (val != 0) {
                         this.numSolved++;
-                        found[val-1] = true;
+                        this.found[val-1] = true;
+                    } else {
+                        indexStruct missingIndex = new indexStruct(i, j);
+                        this.missingNumsIndices.add(missingIndex);
                     }
                 }
             }
@@ -36,12 +50,24 @@ public class SubMatrix {
     public void update(int rowNum, int colNum, int newNum) {
         this.values[rowNum % 3][colNum % 3] = newNum;
         this.numSolved = 0;
+        this.missingNums.clear();
+        this.missingNumsIndices.clear();
+        Arrays.fill(this.found, 0, this.found.length, false);
+
         for (int i = 0; i < this.values.length; i++) {
             for (int j = 0; j < this.values[0].length; j++) {
-                if (this.values[i][j] != 0) {
+                int val = values[i][j];
+                if (val != 0) {
                     this.numSolved++;
+                    this.found[val-1] = true;
+                } else {
+                    indexStruct missingIndex = new indexStruct(i, j);
+                    this.missingNumsIndices.add(missingIndex);
                 }
             }
+        }
+        for (int i = 0; i < 9; i++) {
+            if (!found[i]) missingNums.add(i+1);
         }
     }
 

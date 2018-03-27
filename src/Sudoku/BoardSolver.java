@@ -24,74 +24,157 @@ public class BoardSolver {
         // for each 0 slot, we check all conflicting neighboring structs to see if we can find a guaranteed correct location
         currBoard = board;
         int count = 0;
-        while (count != 5) {
-            instantiateBuckets(buckets, currBoard);
+        int attempt = 0;
+        instantiateBuckets(buckets, currBoard);
+        while (!validateSolution(currBoard)) {
+            boolean foundConfirmedNumber = false;
             count++;
             ArrayList<BoardStruct> minBucket = buckets[fewestRemainingIndex];
+            printBucket(buckets);
+            //printBoardState(currBoard);
+            //System.out.println("FI: " + fewestRemainingIndex);
             BoardStruct minStruct = minBucket.get(0);
             System.out.println("MIN STRUCT: " + minStruct.type + " " + minStruct.num);
+            //printBoardState(currBoard);
             if (minStruct.type == TYPE.ROW) {
-                System.out.println("ROW TYPE");
                 Row currRow = minStruct.row;
-                for (int i = 0; i < 9; i++) {
-                    // this is an empty spot
-                    if (currRow.values[i] == 0) {
-                        // check how good inserting an elem is here
-                        for (int potentialVal : currRow.missingNums) {
-                            Board testBoard = currBoard.clone();
-                            if (testBoard.getNumConflicts(currRow, potentialVal, i) == 0) {
-                                // set currBoard to this modified board with potentialVal
-                                currBoard = testBoard;
-                                // update buckets as well
-                                // recursively call solve with this new board?
-                                break;
-                            }
+                ArrayList<Integer> missingNumsList = board.clone(currRow.missingNums);
+                ArrayList<Integer> missingNumsIndicesList = board.clone(currRow.missingNumsIndices);
+
+                for (int i : missingNumsIndicesList) {
+                    //System.out.println("index: " + i);
+                    for (int missingNum : currRow.missingNums) {
+                        //System.out.println("missing num: " + missingNum);
+                        Board testBoard = currBoard.clone();
+                        ArrayList<Integer> potentialValsList = testBoard.getNumRowConflicts(currRow.rowNum, missingNum, i, missingNumsList);
+                        //System.out.println("potvallist: " + potentialValsList.toString());
+                        // this means there is only 1 spot this val to go in, it has to go in that spot
+                        if (potentialValsList.size() == 1) {
+                            foundConfirmedNumber = true;
+                            int[] updatedRowVals = testBoard.getRow(currRow.rowNum).values;
+                            updatedRowVals[i] = potentialValsList.get(0);
+                            Row newRow = new Row(updatedRowVals, currRow.rowNum);
+                            testBoard.updateRow(currRow.rowNum, newRow, i, potentialValsList.get(0));
+                            currBoard = testBoard;
+                            //reset the list
+                            missingNumsList = board.clone(currRow.missingNums);
+                            missingNumsList.remove(new Integer(potentialValsList.get(0)));
+                            currRow.missingNums = missingNumsList;
+                            break;
                         }
                     }
+                    missingNumsList = board.clone(currRow.missingNums);
                 }
-
+                // if we didn't find a guaranteed spot, we move this struct to end of its bucket
+                if (!foundConfirmedNumber) {
+//                    System.out.println("hi: " + buckets[fewestRemainingIndex].size());
+//                    printBucket(buckets);
+//                    printBoardState(currBoard);
+                    // there is only 1 struct at the fewestIndex but it couldn't confirm any spots. Demote fewest remaining index to
+                    // see we can confirm spots in a lesser bucket
+                    if (buckets[fewestRemainingIndex].size() == 1) {
+                        fewestRemainingIndex--;
+                    } else {
+                        if (attempt == 2) {
+                            fewestRemainingIndex = updateFewestRemainingIndex(buckets, fewestRemainingIndex-1);
+                            attempt = 0;
+                        } else {
+                            buckets[fewestRemainingIndex].remove(minStruct);
+                            buckets[fewestRemainingIndex].add(minStruct);
+                            attempt++;
+                        }
+                    }
+                } else {
+                    instantiateBuckets(buckets, currBoard);
+                }
             } else if (minStruct.type == TYPE.COLUMN) {
+                //printBoardState(currBoard);
                 Column currCol = minStruct.col;
                 ArrayList<Integer> missingNumsList = board.clone(currCol.missingNums);
                 ArrayList<Integer> missingNumsIndicesList = board.clone(currCol.missingNumsIndices);
-                //System.out.println(missingNumsList);
-                //System.out.println(missingNumsIndicesList);
                 for (int i : missingNumsIndicesList) {
-                    System.out.println("index: " + i);
                     for (int missingNum : currCol.missingNums) {
                         Board testBoard = currBoard.clone();
-                        //System.out.println("ccmissingnumsbefore: "+ missingNum + " " + currCol.missingNums.toString());
-                        //System.out.println("copybefore: " + missingNumsList.toString());
-                        ArrayList<Integer> potentialValsList = testBoard.getNumConflicts(currCol.colNum, missingNum, i, missingNumsList);
-                        //System.out.println("ccmissingnumsafter: " + currCol.missingNums.toString());
-                        //System.out.println("copyafter: " + missingNumsList.toString());
+                        ArrayList<Integer> potentialValsList = testBoard.getNumColConflicts(currCol.colNum, missingNum, i, missingNumsList);
 
-                        // this means there is only 1 spot this val to go in
+                        // this means there is only 1 spot this val to go in, it has to go in that spot
                         if (potentialValsList.size() == 1) {
+                            foundConfirmedNumber = true;
                             int[] updatedColVals = testBoard.getColumn(currCol.colNum).values;
                             updatedColVals[i] = potentialValsList.get(0);
                             Column newCol = new Column(updatedColVals, currCol.colNum);
-                            //System.out.println("before:");
-                            //BoardUtils.printBoardState(currBoard);
                             testBoard.updateColumn(currCol.colNum, newCol, i, potentialValsList.get(0));
                             currBoard = testBoard;
-                            System.out.println("after");
-                            BoardUtils.printBoardState(currBoard);
-                            //buckets[fewestRemainingIndex].remove(minStruct);
                             //reset the list
                             missingNumsList = board.clone(currCol.missingNums);
                             missingNumsList.remove(new Integer(potentialValsList.get(0)));
                             currCol.missingNums = missingNumsList;
-                            //updateBuckets(buckets, new BoardStruct(newCol), i, currBoard);
                             break;
                         }
                     }
                     missingNumsList = board.clone(currCol.missingNums);
                 }
+                if (!foundConfirmedNumber) {
+                    if (buckets[fewestRemainingIndex].size() == 1) {
+                        fewestRemainingIndex--;
+                    } else {
+                        if (attempt == 2) {
+                            fewestRemainingIndex = updateFewestRemainingIndex(buckets, fewestRemainingIndex-1);
+                            attempt = 0;
+                        } else {
+                            buckets[fewestRemainingIndex].remove(minStruct);
+                            buckets[fewestRemainingIndex].add(minStruct);
+                            attempt++;
+                        }
+                    }
+                } else {
+                    instantiateBuckets(buckets, currBoard);
+                }
             } else {
-                System.out.println("MARIX");
+                SubMatrix mat = minStruct.mat;
+                ArrayList<Integer> missingNumsList = board.clone(mat.missingNums);
+                ArrayList<SubMatrix.indexStruct> missingNumsIndicesList = board.cloneMat(mat.missingNumsIndices);
+                for (SubMatrix.indexStruct index : missingNumsIndicesList) {
+                    for (int missingNum : mat.missingNums) {
+                        Board testBoard = currBoard.clone();
+                        ArrayList<Integer> potentialValsList = testBoard.getNumMatConflicts(mat.matrixNum, missingNum, index, missingNumsList);
+
+                        // this means there is only 1 spot this val to go in, it has to go in that spot
+                        if (potentialValsList.size() == 1) {
+                            foundConfirmedNumber = true;
+                            mat.update(index.rowIndex, index.colIndex, potentialValsList.get(0));
+                            testBoard.updateMat(mat.matrixNum, mat, index, potentialValsList.get(0));
+                            currBoard = testBoard;
+                            //reset the list
+                            missingNumsList = board.clone(mat.missingNums);
+                            missingNumsList.remove(new Integer(potentialValsList.get(0)));
+                            mat.missingNums = missingNumsList;
+                            break;
+                        }
+                    }
+                    missingNumsList = board.clone(mat.missingNums);
+                }
+                if (!foundConfirmedNumber) {
+                    if (buckets[fewestRemainingIndex].size() == 1) {
+                        fewestRemainingIndex--;
+                    } else {
+                        // there were more than 1 struct in this bucket, append to end to see if other member can confirm a spot
+                        if (attempt == 2) {
+                            fewestRemainingIndex = updateFewestRemainingIndex(buckets, fewestRemainingIndex-1);
+                            attempt = 0;
+                        } else {
+                            buckets[fewestRemainingIndex].remove(minStruct);
+                            buckets[fewestRemainingIndex].add(minStruct);
+                            attempt++;
+                        }
+                    }
+                } else {
+                    instantiateBuckets(buckets, currBoard);
+                }
             }
         }
+        System.out.println("steps: " + count);
+        printBoardState(currBoard);
     }
 
     // instantiate buckets in beginnnign of solve function NOT IN WHILE LOOP
@@ -137,7 +220,14 @@ public class BoardSolver {
                 break;
             }
         }
-        printBucket(buckets);
+        //printBucket(buckets);
+    }
+
+    public int updateFewestRemainingIndex(ArrayList<BoardStruct>[] buckets, int currIndex) {
+        while (buckets[currIndex] == null || buckets[currIndex].size() == 0) {
+            currIndex--;
+        }
+        return currIndex;
     }
 
     /**
@@ -147,55 +237,7 @@ public class BoardSolver {
      * @param index the index of the spot of the struct we modified
      */
     public void updateBuckets(ArrayList<BoardStruct>[] buckets, BoardStruct struct, int index, Board board) {
-        //if i update col 1, spot1, i have to update mat1 and row1
-        int structNum = struct.num;
-        if (struct.type == TYPE.ROW) {
 
-        } else if (struct.type == TYPE.COLUMN) {
-            Row row = board.getRow(index+1);
-            int rowBucketIndex = row.numSolved-2;
-            System.out.println("row update: " + row.toString() + " index: " + rowBucketIndex);
-            BoardStruct rowStruct = getStruct(buckets, new BoardStruct(row), rowBucketIndex);
-            buckets[rowBucketIndex].remove(rowStruct);
-            if (rowBucketIndex < 8) {
-                if (buckets[rowBucketIndex+1] == null) buckets[rowBucketIndex+1] = new ArrayList<>();
-                buckets[rowBucketIndex+1].add(rowStruct);
-            }
-            SubMatrix mat = board.getConflictingMatrix(struct.col, row);
-            mat.printSubMatrix();
-            int matBucketIndex = mat.numSolved-2;
-            System.out.println("index: " + matBucketIndex);
-            BoardStruct matStruct = getStruct(buckets, new BoardStruct(mat), matBucketIndex);
-            buckets[matBucketIndex].remove(matStruct);
-            if (matBucketIndex < 8) {
-                if (buckets[matBucketIndex+1] == null) buckets[matBucketIndex+1] = new ArrayList<>();
-                buckets[matBucketIndex+1].add(matStruct);
-            }
-            int colBucketIndex;
-            if (struct.col.numSolved == 9) {
-                colBucketIndex = 8;
-            } else {
-                colBucketIndex = struct.col.numSolved-2;
-            }
-            System.out.println("col update: " + struct.col.toString() + " index: " + colBucketIndex);
-            BoardStruct colStruct = getStruct(buckets, struct, colBucketIndex);
-            buckets[colBucketIndex].remove(colStruct);
-            if (colBucketIndex < 8) {
-                if (buckets[colBucketIndex+1] == null) buckets[colBucketIndex+1] = new ArrayList<>();
-                buckets[colBucketIndex+1].add(struct);
-            }
-            for (int i = 7; i >= 0; i--) {
-                if (buckets[i] != null && buckets[i].size() != 0)  {
-                    fewestRemainingIndex = i;
-                    break;
-                }
-            }
-            System.out.println("UPDATED###############");
-            printBucket(buckets);
-            System.out.println("######################");
-        } else {
-
-        }
     }
 
     public BoardStruct getStruct(ArrayList<BoardStruct>[] buckets, BoardStruct struct, int bucketIndex) {

@@ -89,7 +89,7 @@ public class BoardTester {
                 String errorMessage = ex.toString();
                 String incorrectNumberString = errorMessage.substring(errorMessage.indexOf(':') + 2, errorMessage.length());
                 int incorrectNumber = Integer.parseInt(incorrectNumberString) + 1;
-                System.out.println("Invalid Solution: Number " + incorrectNumber + " at row " + (rowNumber + 1) + " column " + (i+1) + " is not valid");
+                if (num != 0) System.out.println("Invalid Solution: Number " + incorrectNumber + " at row " + (rowNumber + 1) + " column " + (i+1) + " is not valid");
                 return false;
             }
         }
@@ -293,5 +293,21 @@ public class BoardTester {
             }
         }
         return true;
+    }
+
+    public static void main(String[] args) {
+        int[][] test = new int[][]{
+                {6, 4, 8, 5, 2, 3, 1, 9, 7},
+                {3, 2, 9, 1, 7, 4, 5, 6, 8},
+                {5, 1, 7, 8, 9, 6, 4, 2, 3},
+                {7, 9, 5, 2, 6, 1, 8, 3, 4},
+                {4, 8, 6, 3, 5, 9, 2, 7, 1},
+                {1, 3, 2, 7, 4, 8, 6, 5, 9},
+                {8, 6, 3, 9, 1, 2, 7, 4, 5},
+                {9, 5, 4, 6, 8, 7, 3, 1, 2},
+                {2, 7, 1, 4, 3, 5, 9, 8, 6}
+        };
+        Board board = new Board(test);
+        System.out.println(validateSolution(board));
     }
 }

@@ -16,7 +16,7 @@ public class BoardSolver {
     // buckets index 0 = 1 solved .... index 8 = 9 solved
     private ArrayList<BoardStruct>[] buckets = new ArrayList[9];
     private Board currBoard;
-    public void solve(Board board) {
+    public Board solve(Board board) {
         // each index of the bucket corresponds to number of solved entries
         // there are arraylists holding the structs with that number of solved entries
         // we grab the arraylist with the max number of solved entries (fewestRemainingIndex)
@@ -30,11 +30,11 @@ public class BoardSolver {
             boolean foundConfirmedNumber = false;
             count++;
             ArrayList<BoardStruct> minBucket = buckets[fewestRemainingIndex];
-            printBucket(buckets);
+            //printBucket(buckets);
             //printBoardState(currBoard);
             //System.out.println("FI: " + fewestRemainingIndex);
             BoardStruct minStruct = minBucket.get(0);
-            System.out.println("MIN STRUCT: " + minStruct.type + " " + minStruct.num);
+            //System.out.println("MIN STRUCT: " + minStruct.type + " " + minStruct.num);
             //printBoardState(currBoard);
             if (minStruct.type == TYPE.ROW) {
                 Row currRow = minStruct.row;
@@ -71,7 +71,7 @@ public class BoardSolver {
 //                    printBucket(buckets);
 //                    printBoardState(currBoard);
                     // there is only 1 struct at the fewestIndex but it couldn't confirm any spots. Demote fewest remaining index to
-                    // see we can confirm spots in a lesser bucket
+                    // see if we can confirm spots in a lesser bucket
                     if (buckets[fewestRemainingIndex].size() == 1) {
                         fewestRemainingIndex--;
                     } else {
@@ -175,10 +175,12 @@ public class BoardSolver {
         }
         System.out.println("steps: " + count);
         printBoardState(currBoard);
+        return currBoard;
     }
 
-    // instantiate buckets in beginnnign of solve function NOT IN WHILE LOOP
-    // CREAATE NEW UPDATE BUCKETS FUNCTION THAT GOES IN WHILE LOOP (takes in row/col/mat to update the buckets)
+    // called prior to while loop
+    // counts the number of solved spots for each col/row/matrix and places them into the buckets
+    // CREATE NEW UPDATE BUCKETS FUNCTION THAT GOES IN WHILE LOOP (takes in row/col/mat to update the buckets)
     public void instantiateBuckets(ArrayList<BoardStruct>[] buckets, Board board) {
         Arrays.fill(buckets, null);
         Row[] rows = board.rowArr;
@@ -214,6 +216,8 @@ public class BoardSolver {
             matStruct.bucketIndex = index;
             buckets[index].add(matStruct);
         }
+
+        // we start at bucket 7 (8 solved) and try to find the bucket with the fewest remaining spots needed to be filled
         for (int i = 7; i >= 0; i--) {
             if (buckets[i] != null && buckets[i].size() != 0)  {
                 fewestRemainingIndex = i;

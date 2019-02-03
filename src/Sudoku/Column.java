@@ -14,10 +14,10 @@ public class Column {
     SubMatrix[] matrices = new SubMatrix[3];
 
     public Column(Board board, char c) {
-        // colNum is 1-indexed
-        this.colNum = c - 'A' + 1;
+        // colNum is 0-indexed
+        this.colNum = c - 'A';
         this.colName = c;
-        this.values = getValues(board, colNum - 1);
+        this.values = getValues(board, colNum);
         if (this.values != null) {
             for (int i = 0; i < this.values.length; i++) {
                 int val = this.values[i];
@@ -121,19 +121,19 @@ public class Column {
 
     public void linkAssociateMatricesToColumn(Board board) {
         // matrices 1,4,7
-        if (this.colNum == 1 || this.colNum == 2 || this.colNum == 3) {
+        if (this.colNum == 0 || this.colNum == 1 || this.colNum == 2) {
+            matrices[0] = board.getSubMatrix(0);
+            matrices[1] = board.getSubMatrix(3);
+            matrices[2] = board.getSubMatrix(6);
+        } else if (this.colNum == 3 || this.colNum == 4 || this.colNum == 5) {
+            // matrices 2,5,8
             matrices[0] = board.getSubMatrix(1);
             matrices[1] = board.getSubMatrix(4);
             matrices[2] = board.getSubMatrix(7);
-        } else if (this.colNum == 4 || this.colNum == 5 || this.colNum == 6) {
-            // matrices 2,5,8
+        } else {
             matrices[0] = board.getSubMatrix(2);
             matrices[1] = board.getSubMatrix(5);
             matrices[2] = board.getSubMatrix(8);
-        } else {
-            matrices[0] = board.getSubMatrix(3);
-            matrices[1] = board.getSubMatrix(6);
-            matrices[2] = board.getSubMatrix(9);
         }
     }
 }

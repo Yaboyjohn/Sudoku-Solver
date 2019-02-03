@@ -85,7 +85,7 @@ public class SubMatrix {
     }
 
     public static int[][] getValues(Board board, int loc) {
-        if (loc == 1) {
+        if (loc == 0) {
             int[][] vals = new int[3][3];
             for (int row = 0; row < 3; row++) {
                 for (int col = 0; col < 3; col++) {
@@ -94,7 +94,7 @@ public class SubMatrix {
                 }
             }
             return vals;
-        } else if (loc == 2) {
+        } else if (loc == 1) {
             int[][]vals = new int[3][3];
             for (int row = 0; row < 3; row++) {
                 for (int col = 3; col < 6; col++) {
@@ -103,7 +103,7 @@ public class SubMatrix {
                 }
             }
             return vals;
-        } else if (loc == 3) {
+        } else if (loc == 2) {
             int[][] vals = new int[3][3];
             for (int row = 0; row < 3; row++) {
                 for (int col = 6; col < 9; col++) {
@@ -112,7 +112,7 @@ public class SubMatrix {
                 }
             }
             return vals;
-        } else if (loc == 4) {
+        } else if (loc == 3) {
             int[][] vals = new int[3][3];
             for (int row = 3; row < 6; row++) {
                 for (int col = 0; col < 3; col++) {
@@ -121,7 +121,7 @@ public class SubMatrix {
                 }
             }
             return vals;
-        } else if (loc == 5) {
+        } else if (loc == 4) {
             int[][] vals = new int[3][3];
             for (int row = 3; row < 6; row++) {
                 for (int col = 3; col < 6; col++) {
@@ -130,7 +130,7 @@ public class SubMatrix {
                 }
             }
             return vals;
-        } else if (loc == 6) {
+        } else if (loc == 5) {
             int[][] vals = new int[3][3];
             for (int row = 3; row < 6; row++) {
                 for (int col = 6; col < 9; col++) {
@@ -139,7 +139,7 @@ public class SubMatrix {
                 }
             }
             return vals;
-        } else if (loc == 7) {
+        } else if (loc == 6) {
             int[][]vals = new int[3][3];
             for (int row = 6; row < 9; row++) {
                 for (int col = 0; col < 3; col++) {
@@ -148,7 +148,7 @@ public class SubMatrix {
                 }
             }
             return vals;
-        } else if (loc == 8) {
+        } else if (loc == 7) {
             int[][]vals = new int[3][3];
             for (int row = 6; row < 9; row++) {
                 for (int col = 3; col < 6; col++) {
@@ -157,7 +157,7 @@ public class SubMatrix {
                 }
             }
             return vals;
-        } else if (loc == 9) {
+        } else if (loc == 8) {
             int[][]vals = new int[3][3];
             for (int row = 6; row < 9; row++) {
                 for (int col = 6; col < 9; col++) {
@@ -167,7 +167,7 @@ public class SubMatrix {
             }
             return vals;
         } else {
-            System.out.println("Invalid sub matrix number. Numbers must be between 1 and 9");
+            System.out.println("Invalid sub matrix number. Numbers must be between 0 and 8");
         }
         return null;
     }

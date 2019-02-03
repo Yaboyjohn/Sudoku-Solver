@@ -20,9 +20,9 @@ public class Board {
         this.colArr = getAllColumns();
     }
 
-    /** These getters are all 1-indexed **/
+    /** These getters are all 0-indexed **/
     public Row getRow(int rowNum) {
-        return rowArr[rowNum-1];
+        return rowArr[rowNum];
     }
 
     public Cell getCell(int rowNum, char colName) {
@@ -35,12 +35,12 @@ public class Board {
     }
 
     public Column getColumn(int colNum) {
-        return colArr[colNum-1];
+        return colArr[colNum];
 
     }
 
     public SubMatrix getSubMatrix(int num) {
-        return matArr[num-1];
+        return matArr[num];
     }
 
     /**
@@ -53,7 +53,7 @@ public class Board {
     public void updateColumn(int colNum, Column col, int rowNum, int newNum) {
         //update conflicting row
         Row row = this.rowArr[rowNum];
-        row.values[colNum-1] = newNum;
+        row.values[colNum] = newNum;
         Arrays.fill(row.found, 0, row.found.length, false);
         row.numSolved = 0;
         row.missingNumsIndices.clear();
@@ -73,11 +73,11 @@ public class Board {
 
         //update the conflicting matrix
         SubMatrix mat = getConflictingMatrix(col, row);
-        mat.update(rowNum, colNum-1, newNum);
-        this.matArr[mat.matrixNum-1] = mat;
+        mat.update(rowNum, colNum, newNum);
+        this.matArr[mat.matrixNum] = mat;
 
         //update the column itself
-        this.colArr[colNum-1] = col;
+        this.colArr[colNum] = col;
         Arrays.fill(col.found, 0, col.found.length, false);
         col.numSolved = 0;
         col.missingNumsIndices.clear();
@@ -96,9 +96,10 @@ public class Board {
         }
     }
 
+    // the row passed in here is already updated, no need to update with newNum again
     public void updateRow(int rowNum, Row row, int colNum, int newNum) {
         // we replace row at index with this new updated row, update its metadata
-        this.rowArr[rowNum-1] = row;
+        this.rowArr[rowNum] = row;
         row.missingNumsIndices.remove(Integer.valueOf(colNum));
         row.missingNums.remove(Integer.valueOf(newNum));
         row.numSolved++;
@@ -106,16 +107,16 @@ public class Board {
 
         // update col (we modify in place, no need to replace)
         Column col = this.colArr[colNum];
-        col.values[rowNum-1] = newNum;
-        col.missingNumsIndices.remove(Integer.valueOf(rowNum-1));
+        col.values[rowNum] = newNum;
+        col.missingNumsIndices.remove(Integer.valueOf(rowNum));
         col.missingNums.remove(Integer.valueOf(newNum));
         col.numSolved++;
-        col.found[rowNum-1] = true;
+        col.found[rowNum] = true;
 
         //update mat
         SubMatrix mat = getConflictingMatrix(col, row);
-        mat.update(rowNum-1, colNum, newNum);
-        this.matArr[mat.matrixNum-1] = mat;
+        mat.update(rowNum, colNum, newNum);
+        this.matArr[mat.matrixNum] = mat;
     }
 
     /**
@@ -127,7 +128,7 @@ public class Board {
     public void updateMat(int matNum, SubMatrix mat, SubMatrix.indexStruct index, int newNum) {
         // update board with updated matrix
         // matrix metadata already updated before this call
-        this.matArr[matNum-1] = mat;
+        this.matArr[matNum] = mat;
 
         // update col in place
         Column col = this.colArr[convertColIndexToIndex(index.colIndex, matNum)];
@@ -173,14 +174,14 @@ public class Board {
     }
 
     public int convertRowIndexToIndex(int rowIndex, int matNum) {
-       if (matNum <= 3) return rowIndex;
-       else if (matNum <= 6) return rowIndex + 3;
+       if (matNum <= 2) return rowIndex;
+       else if (matNum <= 5) return rowIndex + 3;
        else return rowIndex + 6;
     }
 
     public int convertColIndexToIndex(int colIndex, int matNum) {
-        if (matNum == 1 || matNum == 4 || matNum == 7) return colIndex;
-        else if (matNum == 2 || matNum == 5 || matNum == 8) return colIndex + 3;
+        if (matNum == 0 || matNum == 3 || matNum == 6) return colIndex;
+        else if (matNum == 1 || matNum == 4 || matNum == 7) return colIndex + 3;
         else return colIndex + 6;
     }
 
@@ -205,8 +206,8 @@ public class Board {
 
     public Row[] getAllRows() {
         Row[] rowArr = new Row[9];
-        for (int i = 1; i < 10; i++) {
-            rowArr[i-1] = new Row(this, i);
+        for (int i = 0; i < 9; i++) {
+            rowArr[i] = new Row(this, i);
         }
         return rowArr;
     }
@@ -222,8 +223,8 @@ public class Board {
 
     public SubMatrix[] getAllSubMatrices() {
         SubMatrix[] matArr = new SubMatrix[9];
-        for (int i = 1; i < 10; i++) {
-            matArr[i-1] = new SubMatrix(this, i);
+        for (int i = 0; i < 9; i++) {
+            matArr[i] = new SubMatrix(this, i);
         }
         return matArr;
     }
@@ -243,18 +244,18 @@ public class Board {
     public SubMatrix getConflictingMatrix(Column col, Row row) {
         int colNum = col.colNum;
         int rowNum = row.rowNum;
-        if (colNum <= 3) {
-            if (rowNum <= 3) return getSubMatrix(1);
-            else if (rowNum <= 6) return getSubMatrix(4);
+        if (colNum <= 2) {
+            if (rowNum <= 2) return getSubMatrix(0);
+            else if (rowNum <= 5) return getSubMatrix(3);
+            else return getSubMatrix(6);
+        } else if (colNum <= 5) {
+            if (rowNum <= 2) return getSubMatrix(1);
+            else if (rowNum <= 5) return getSubMatrix(4);
             else return getSubMatrix(7);
-        } else if (colNum <= 6) {
-            if (rowNum <= 3) return getSubMatrix(2);
-            else if (rowNum <= 6) return getSubMatrix(5);
-            else return getSubMatrix(8);
         } else {
-            if (rowNum <= 3) return getSubMatrix(3);
-            else if (rowNum <= 6) return getSubMatrix(6);
-            else return getSubMatrix(9);
+            if (rowNum <= 2) return getSubMatrix(2);
+            else if (rowNum <= 5) return getSubMatrix(5);
+            else return getSubMatrix(8);
         }
     }
 
@@ -269,8 +270,11 @@ public class Board {
     public ArrayList<Integer> getNumColConflicts(int colNum, int potentialVal, int missingNumIndex, ArrayList<Integer> potentialValList) {
         Column col = this.getColumn(colNum);
         // check the conflicting row and each of the associated matrices to see if we can remove some numbers from missingNums of col
-        Row conflictingRow = this.getRow(missingNumIndex+1);
+        Row conflictingRow = this.getRow(missingNumIndex);
         SubMatrix conflictingMatrix = getConflictingMatrix(col, conflictingRow);
+        System.out.println("row: " + conflictingRow.rowNum);
+        System.out.println("mat: " + conflictingMatrix.matrixNum);
+
 
         // remove potential val from the list
         if (conflictingMatrix.contains(potentialVal) || conflictingRow.contains(potentialVal) || col.contains(potentialVal)) {
@@ -286,8 +290,10 @@ public class Board {
     public ArrayList<Integer> getNumRowConflicts(int rowNum, int potentialVal, int missingNumIndex, ArrayList<Integer> potentialValList) {
         Row row = this.getRow(rowNum);
         // check the conflicting col and each of the associated matrices to see if we can remove some numbers from missingNums of this row
-        Column conflictingCol = this.getColumn(missingNumIndex+1);
+        Column conflictingCol = this.getColumn(missingNumIndex);
         SubMatrix conflictingMatrix = getConflictingMatrix(conflictingCol, row);
+        System.out.println("con col: " + conflictingCol.colNum);
+        System.out.println("con mat: " + conflictingMatrix.matrixNum);
 
         // remove potential val from the list
         if (conflictingMatrix.contains(potentialVal) || conflictingCol.contains(potentialVal) || row.contains(potentialVal)) {
@@ -310,9 +316,9 @@ public class Board {
      */
     public ArrayList<Integer> getNumMatConflicts(int matNum, int potentialVal, SubMatrix.indexStruct index, ArrayList<Integer> potentialValList) {
         // Col conflictingCol = this.getColumn(index.colIndex+1);
-        Column conflictingCol = this.getColumn(convertColIndexToIndex(index.colIndex, matNum)+1);
+        Column conflictingCol = this.getColumn(convertColIndexToIndex(index.colIndex, matNum));
         //Row conflictingRow = this.getRow(index.rowIndex+1);
-        Row conflictingRow = this.getRow(convertRowIndexToIndex(index.rowIndex, matNum) +1);
+        Row conflictingRow = this.getRow(convertRowIndexToIndex(index.rowIndex, matNum));
         SubMatrix mat = this.getSubMatrix(matNum);
 
         // remove potential val from the list

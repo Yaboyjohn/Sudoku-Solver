@@ -15,9 +15,9 @@ public class Row {
     public Row(Board board, int num) {
         this.rowNum = num;
         try {
-            this.values = board.numbersOnBoard[num - 1];
+            this.values = board.numbersOnBoard[num];
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("Invalid row number. Rows are 1-indexed");
+            System.out.println("Invalid row number. Rows are 0-indexed");
             this.values = null;
         }
         if (this.values != null) {
@@ -100,18 +100,18 @@ public class Row {
     public void linkAssociateMatricesToRow(Board board) {
         // matrices 1,4,7
         if (this.rowNum == 1 || this.rowNum == 2 || this.rowNum == 3) {
+            matrices[0] = board.getSubMatrix(0);
+            matrices[1] = board.getSubMatrix(3);
+            matrices[2] = board.getSubMatrix(6);
+        } else if (this.rowNum == 4 || this.rowNum == 5 || this.rowNum == 6) {
+            // matrices 2,5,8
             matrices[0] = board.getSubMatrix(1);
             matrices[1] = board.getSubMatrix(4);
             matrices[2] = board.getSubMatrix(7);
-        } else if (this.rowNum == 4 || this.rowNum == 5 || this.rowNum == 6) {
-            // matrices 2,5,8
+        } else {
             matrices[0] = board.getSubMatrix(2);
             matrices[1] = board.getSubMatrix(5);
             matrices[2] = board.getSubMatrix(8);
-        } else {
-            matrices[0] = board.getSubMatrix(3);
-            matrices[1] = board.getSubMatrix(6);
-            matrices[2] = board.getSubMatrix(9);
         }
     }
 }

@@ -31,7 +31,7 @@ public class BoardSolver {
             count++;
             ArrayList<BoardStruct> minBucket = buckets[fewestRemainingIndex];
             printBucket(buckets);
-            //printBoardState(currBoard);
+            printBoardState(currBoard);
             //System.out.println("FI: " + fewestRemainingIndex);
             BoardStruct minStruct = minBucket.get(0);
             System.out.println("MIN STRUCT: " + minStruct.type + " " + minStruct.num);
@@ -70,9 +70,6 @@ public class BoardSolver {
                 }
                 // if we didn't find a guaranteed spot, we move this struct to end of its bucket
                 if (!foundConfirmedNumber) {
-//                    System.out.println("hi: " + buckets[fewestRemainingIndex].size());
-//                    printBucket(buckets);
-//                    printBoardState(currBoard);
                     // there is only 1 struct at the fewestIndex but it couldn't confirm any spots. Demote fewest remaining index to
                     // see if we can confirm spots in a lesser bucket
                     if (buckets[fewestRemainingIndex].size() == 1) {
@@ -91,17 +88,23 @@ public class BoardSolver {
                     instantiateBuckets(buckets, currBoard);
                 }
             } else if (minStruct.type == TYPE.COLUMN) {
+                System.out.println("here");
                 //printBoardState(currBoard);
                 Column currCol = minStruct.col;
                 ArrayList<Integer> missingNumsList = board.clone(currCol.missingNums);
+                System.out.println(missingNumsList);
                 ArrayList<Integer> missingNumsIndicesList = board.clone(currCol.missingNumsIndices);
+                System.out.println(missingNumsIndicesList);
+
                 for (int i : missingNumsIndicesList) {
                     for (int missingNum : currCol.missingNums) {
                         Board testBoard = currBoard.clone();
                         ArrayList<Integer> potentialValsList = testBoard.getNumColConflicts(currCol.colNum, missingNum, i, missingNumsList);
+                        System.out.println(potentialValsList);
 
                         // this means there is only 1 spot this val to go in, it has to go in that spot
                         if (potentialValsList.size() == 1) {
+
                             foundConfirmedNumber = true;
                             int[] updatedColVals = testBoard.getColumn(currCol.colNum).values;
                             updatedColVals[i] = potentialValsList.get(0);
@@ -177,7 +180,7 @@ public class BoardSolver {
             }
         }
         System.out.println("steps: " + count);
-        printBoardState(currBoard);
+        //printBoardState(currBoard);
         return currBoard;
     }
 

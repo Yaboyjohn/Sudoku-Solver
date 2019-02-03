@@ -30,27 +30,23 @@ public class BoardSolver {
             boolean foundConfirmedNumber = false;
             count++;
             ArrayList<BoardStruct> minBucket = buckets[fewestRemainingIndex];
-            printBucket(buckets);
-            printBoardState(currBoard);
+            //printBucket(buckets);
+            //printBoardState(currBoard);
             //System.out.println("FI: " + fewestRemainingIndex);
             BoardStruct minStruct = minBucket.get(0);
-            System.out.println("MIN STRUCT: " + minStruct.type + " " + minStruct.num);
+            //System.out.println(fewestRemainingIndex);
+            //System.out.println("MIN STRUCT: " + minStruct.type + " " + minStruct.num);
             //printBoardState(currBoard);
             if (minStruct.type == TYPE.ROW) {
                 Row currRow = minStruct.row;
                 ArrayList<Integer> missingNumsList = board.clone(currRow.missingNums);
                 ArrayList<Integer> missingNumsIndicesList = board.clone(currRow.missingNumsIndices);
-                System.out.println("missinign INdices: "  + missingNumsIndicesList);
-                System.out.println("missingNums: " + missingNumsList);
 
                 // for each empty spot, try to place each missing num and check conflicting boardStructs to see if we can confirm placement
                 for (int missingNumsIndex : missingNumsIndicesList) {
-                    System.out.println("index: " + missingNumsIndex);
                     for (int missingNum : currRow.missingNums) {
-                        System.out.println("missing num: " + missingNum);
                         Board testBoard = currBoard.clone();
                         ArrayList<Integer> potentialValsList = testBoard.getNumRowConflicts(currRow.rowNum, missingNum, missingNumsIndex, missingNumsList);
-                        System.out.println("potvallist: " + potentialValsList.toString());
                         // this means there is only 1 spot this val to go in, it has to go in that spot
                         if (potentialValsList.size() == 1) {
                             foundConfirmedNumber = true;
@@ -74,6 +70,7 @@ public class BoardSolver {
                     // see if we can confirm spots in a lesser bucket
                     if (buckets[fewestRemainingIndex].size() == 1) {
                         fewestRemainingIndex--;
+                        findNewFewestRemainingIndex(buckets);
                     } else {
                         if (attempt == 2) {
                             fewestRemainingIndex = updateFewestRemainingIndex(buckets, fewestRemainingIndex-1);
@@ -88,19 +85,15 @@ public class BoardSolver {
                     instantiateBuckets(buckets, currBoard);
                 }
             } else if (minStruct.type == TYPE.COLUMN) {
-                System.out.println("here");
                 //printBoardState(currBoard);
                 Column currCol = minStruct.col;
                 ArrayList<Integer> missingNumsList = board.clone(currCol.missingNums);
-                System.out.println(missingNumsList);
                 ArrayList<Integer> missingNumsIndicesList = board.clone(currCol.missingNumsIndices);
-                System.out.println(missingNumsIndicesList);
 
                 for (int i : missingNumsIndicesList) {
                     for (int missingNum : currCol.missingNums) {
                         Board testBoard = currBoard.clone();
                         ArrayList<Integer> potentialValsList = testBoard.getNumColConflicts(currCol.colNum, missingNum, i, missingNumsList);
-                        System.out.println(potentialValsList);
 
                         // this means there is only 1 spot this val to go in, it has to go in that spot
                         if (potentialValsList.size() == 1) {
@@ -123,6 +116,7 @@ public class BoardSolver {
                 if (!foundConfirmedNumber) {
                     if (buckets[fewestRemainingIndex].size() == 1) {
                         fewestRemainingIndex--;
+                        findNewFewestRemainingIndex(buckets);
                     } else {
                         if (attempt == 2) {
                             fewestRemainingIndex = updateFewestRemainingIndex(buckets, fewestRemainingIndex-1);
@@ -163,6 +157,7 @@ public class BoardSolver {
                 if (!foundConfirmedNumber) {
                     if (buckets[fewestRemainingIndex].size() == 1) {
                         fewestRemainingIndex--;
+                        findNewFewestRemainingIndex(buckets);
                     } else {
                         // there were more than 1 struct in this bucket, append to end to see if other member can confirm a spot
                         if (attempt == 2) {
@@ -194,7 +189,7 @@ public class BoardSolver {
         SubMatrix[] mats = board.matArr;
         for (Row r : rows) {
             int index = r.numSolved-1;
-            if (index == 9) continue;
+            if (index == 9 || index == -1) continue;
             if (buckets[index] == null) {
                 buckets[index] = new ArrayList<>();
             }
@@ -204,7 +199,7 @@ public class BoardSolver {
         }
         for (Column c : cols) {
             int index = c.numSolved-1;
-            if (index == 9) continue;
+            if (index == 9 || index == -1) continue;
             if (buckets[index] == null) {
                 buckets[index] = new ArrayList<>();
             }
@@ -214,7 +209,7 @@ public class BoardSolver {
         }
         for (SubMatrix s : mats) {
             int index = s.numSolved-1;
-            if (index == 9) continue;
+            if (index == 9 || index == -1) continue;
             if (buckets[index] == null) {
                 buckets[index] = new ArrayList<>();
             }
@@ -230,15 +225,30 @@ public class BoardSolver {
                 break;
             }
         }
-        printBoardState(board);
-        printBucket(buckets);
+        //printBoardState(board);
+        //printBucket(buckets);
     }
 
     public int updateFewestRemainingIndex(ArrayList<BoardStruct>[] buckets, int currIndex) {
         while (buckets[currIndex] == null || buckets[currIndex].size() == 0) {
-            currIndex--;
+            if (currIndex == 0) {
+                currIndex = 7;
+            } else {
+                currIndex--;
+            }
         }
         return currIndex;
+    }
+
+    public int findNewFewestRemainingIndex(ArrayList<BoardStruct>[] buckets) {
+        while(buckets[fewestRemainingIndex] == null) {
+            if (fewestRemainingIndex == 0) {
+                fewestRemainingIndex = 6;
+            } else {
+                fewestRemainingIndex--;
+            }
+        }
+        return fewestRemainingIndex;
     }
 
     /**

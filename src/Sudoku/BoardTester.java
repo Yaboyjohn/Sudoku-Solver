@@ -87,9 +87,10 @@ public class BoardTester {
                 rowChecker[num-1]++;
             } catch (IndexOutOfBoundsException ex) {
                 String errorMessage = ex.toString();
-                String incorrectNumberString = errorMessage.substring(errorMessage.indexOf(':') + 2, errorMessage.length());
-                int incorrectNumber = Integer.parseInt(incorrectNumberString) + 1;
-                if (num != 0) System.out.println("Invalid Solution: Number " + incorrectNumber + " at row " + (rowNumber + 1) + " column " + (i+1) + " is not valid");
+                //System.out.println(errorMessage);
+                //String incorrectNumberString = errorMessage.substring(errorMessage.indexOf(':') + 2, errorMessage.length());
+                //int incorrectNumber = Integer.parseInt(incorrectNumberString) + 1;
+                //if (num != 0) System.out.println("Invalid Solution: Number " + incorrectNumber + " at row " + (rowNumber + 1) + " column " + (i+1) + " is not valid");
                 return false;
             }
         }

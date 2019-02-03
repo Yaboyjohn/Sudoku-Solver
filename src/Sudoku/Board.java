@@ -272,9 +272,6 @@ public class Board {
         // check the conflicting row and each of the associated matrices to see if we can remove some numbers from missingNums of col
         Row conflictingRow = this.getRow(missingNumIndex);
         SubMatrix conflictingMatrix = getConflictingMatrix(col, conflictingRow);
-        System.out.println("row: " + conflictingRow.rowNum);
-        System.out.println("mat: " + conflictingMatrix.matrixNum);
-
 
         // remove potential val from the list
         if (conflictingMatrix.contains(potentialVal) || conflictingRow.contains(potentialVal) || col.contains(potentialVal)) {
@@ -292,8 +289,6 @@ public class Board {
         // check the conflicting col and each of the associated matrices to see if we can remove some numbers from missingNums of this row
         Column conflictingCol = this.getColumn(missingNumIndex);
         SubMatrix conflictingMatrix = getConflictingMatrix(conflictingCol, row);
-        System.out.println("con col: " + conflictingCol.colNum);
-        System.out.println("con mat: " + conflictingMatrix.matrixNum);
 
         // remove potential val from the list
         if (conflictingMatrix.contains(potentialVal) || conflictingCol.contains(potentialVal) || row.contains(potentialVal)) {

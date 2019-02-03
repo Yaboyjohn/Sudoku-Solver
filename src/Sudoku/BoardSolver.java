@@ -30,31 +30,34 @@ public class BoardSolver {
             boolean foundConfirmedNumber = false;
             count++;
             ArrayList<BoardStruct> minBucket = buckets[fewestRemainingIndex];
-            //printBucket(buckets);
+            printBucket(buckets);
             //printBoardState(currBoard);
             //System.out.println("FI: " + fewestRemainingIndex);
             BoardStruct minStruct = minBucket.get(0);
-            //System.out.println("MIN STRUCT: " + minStruct.type + " " + minStruct.num);
+            System.out.println("MIN STRUCT: " + minStruct.type + " " + minStruct.num);
             //printBoardState(currBoard);
             if (minStruct.type == TYPE.ROW) {
                 Row currRow = minStruct.row;
                 ArrayList<Integer> missingNumsList = board.clone(currRow.missingNums);
                 ArrayList<Integer> missingNumsIndicesList = board.clone(currRow.missingNumsIndices);
+                System.out.println("missinign INdices: "  + missingNumsIndicesList);
+                System.out.println("missingNums: " + missingNumsList);
 
-                for (int i : missingNumsIndicesList) {
-                    //System.out.println("index: " + i);
+                // for each empty spot, try to place each missing num and check conflicting boardStructs to see if we can confirm placement
+                for (int missingNumsIndex : missingNumsIndicesList) {
+                    System.out.println("index: " + missingNumsIndex);
                     for (int missingNum : currRow.missingNums) {
-                        //System.out.println("missing num: " + missingNum);
+                        System.out.println("missing num: " + missingNum);
                         Board testBoard = currBoard.clone();
-                        ArrayList<Integer> potentialValsList = testBoard.getNumRowConflicts(currRow.rowNum, missingNum, i, missingNumsList);
-                        //System.out.println("potvallist: " + potentialValsList.toString());
+                        ArrayList<Integer> potentialValsList = testBoard.getNumRowConflicts(currRow.rowNum, missingNum, missingNumsIndex, missingNumsList);
+                        System.out.println("potvallist: " + potentialValsList.toString());
                         // this means there is only 1 spot this val to go in, it has to go in that spot
                         if (potentialValsList.size() == 1) {
                             foundConfirmedNumber = true;
-                            int[] updatedRowVals = testBoard.getRow(currRow.rowNum).values;
-                            updatedRowVals[i] = potentialValsList.get(0);
-                            Row newRow = new Row(updatedRowVals, currRow.rowNum);
-                            testBoard.updateRow(currRow.rowNum, newRow, i, potentialValsList.get(0));
+                            // insert the new value into this row and update all row meta data and affected boardstructs
+                            Row rowToUpdate = testBoard.getRow(currRow.rowNum);
+                            rowToUpdate.values[missingNumsIndex] = potentialValsList.get(0);
+                            testBoard.updateRow(currRow.rowNum, rowToUpdate, missingNumsIndex, potentialValsList.get(0));
                             currBoard = testBoard;
                             //reset the list
                             missingNumsList = board.clone(currRow.missingNums);
@@ -224,7 +227,8 @@ public class BoardSolver {
                 break;
             }
         }
-        //printBucket(buckets);
+        printBoardState(board);
+        printBucket(buckets);
     }
 
     public int updateFewestRemainingIndex(ArrayList<BoardStruct>[] buckets, int currIndex) {

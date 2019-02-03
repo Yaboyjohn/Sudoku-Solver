@@ -12,6 +12,7 @@ public class SubMatrix {
         int rowIndex;
         int colIndex;
     }
+
     int matrixNum;
     int[][] values;
     int numSolved;
@@ -49,25 +50,21 @@ public class SubMatrix {
      */
     public void update(int rowNum, int colNum, int newNum) {
         this.values[rowNum % 3][colNum % 3] = newNum;
-        this.numSolved = 0;
-        this.missingNums.clear();
+        this.numSolved++;
+        this.missingNums.remove(Integer.valueOf(newNum));
         this.missingNumsIndices.clear();
-        Arrays.fill(this.found, 0, this.found.length, false);
 
+        Arrays.fill(this.found, 0, this.found.length, false);
         for (int i = 0; i < this.values.length; i++) {
             for (int j = 0; j < this.values[0].length; j++) {
                 int val = values[i][j];
                 if (val != 0) {
-                    this.numSolved++;
                     this.found[val-1] = true;
                 } else {
                     indexStruct missingIndex = new indexStruct(i, j);
                     this.missingNumsIndices.add(missingIndex);
                 }
             }
-        }
-        for (int i = 0; i < 9; i++) {
-            if (!found[i]) missingNums.add(i+1);
         }
     }
 

@@ -45,9 +45,9 @@ public class Board {
 
     /**
      *
-     * @param colNum 1-indexed
+     * @param colNum 0-indexed
      * @param col update column
-     * @param rowNum 0-indexed
+     * @param rowNum 1-indexed
      * @param newNum
      */
     public void updateColumn(int colNum, Column col, int rowNum, int newNum) {
@@ -99,43 +99,18 @@ public class Board {
     public void updateRow(int rowNum, Row row, int colNum, int newNum) {
         // we replace row at index with this new updated row, update its metadata
         this.rowArr[rowNum-1] = row;
-        Arrays.fill(row.found, 0, row.found.length, false);
-        row.numSolved = 0;
-        row.missingNumsIndices.clear();
-        row.missingNums.clear();
-        for (int i = 0; i < row.values.length; i++) {
-            int val = row.values[i];
-            if (val != 0)  {
-                row.numSolved++;
-                row.found[val-1] = true;
-            } else {
-                row.missingNumsIndices.add(i);
-            }
-        }
-        for (int i = 0; i < 9; i++) {
-            if (!row.found[i]) row.missingNums.add(i+1);
-        }
+        row.missingNumsIndices.remove(Integer.valueOf(colNum));
+        row.missingNums.remove(Integer.valueOf(newNum));
+        row.numSolved++;
+        row.found[colNum] = true;
 
         // update col (we modify in place, no need to replace)
         Column col = this.colArr[colNum];
         col.values[rowNum-1] = newNum;
+        col.missingNumsIndices.remove(Integer.valueOf(rowNum-1));
+        col.missingNums.remove(Integer.valueOf(newNum));
         col.numSolved++;
-        Arrays.fill(col.found, 0, col.found.length, false);
-        col.numSolved = 0;
-        col.missingNumsIndices.clear();
-        col.missingNums.clear();
-        for (int i = 0; i < col.values.length; i++) {
-            int val = col.values[i];
-            if (val != 0)  {
-                col.numSolved++;
-                col.found[val-1] = true;
-            } else {
-                col.missingNumsIndices.add(i);
-            }
-        }
-        for (int i = 0; i < 9; i++) {
-            if (!col.found[i]) col.missingNums.add(i+1);
-        }
+        col.found[rowNum-1] = true;
 
         //update mat
         SubMatrix mat = getConflictingMatrix(col, row);
@@ -296,8 +271,6 @@ public class Board {
         // check the conflicting row and each of the associated matrices to see if we can remove some numbers from missingNums of col
         Row conflictingRow = this.getRow(missingNumIndex+1);
         SubMatrix conflictingMatrix = getConflictingMatrix(col, conflictingRow);
-        // if we arent able to narrow down the potentialValList to 1, return the original potValList with all possibilities
-        ArrayList<Integer> copy = this.clone(potentialValList);
 
         // remove potential val from the list
         if (conflictingMatrix.contains(potentialVal) || conflictingRow.contains(potentialVal) || col.contains(potentialVal)) {
@@ -306,16 +279,15 @@ public class Board {
                 return potentialValList;
             }
         }
-        return copy;
+        // if we arent able to narrow down the potentialValList to 1, return the original potValList with all possibilities
+        return potentialValList;
     }
 
     public ArrayList<Integer> getNumRowConflicts(int rowNum, int potentialVal, int missingNumIndex, ArrayList<Integer> potentialValList) {
         Row row = this.getRow(rowNum);
-        // check the conflicting row and each of the associated matrices to see if we can remove some numbers from missingNums of col
+        // check the conflicting col and each of the associated matrices to see if we can remove some numbers from missingNums of this row
         Column conflictingCol = this.getColumn(missingNumIndex+1);
         SubMatrix conflictingMatrix = getConflictingMatrix(conflictingCol, row);
-        // if we arent able to narrow down the potentialValList to 1, return the original potValList with all possibilities
-        ArrayList<Integer> copy = this.clone(potentialValList);
 
         // remove potential val from the list
         if (conflictingMatrix.contains(potentialVal) || conflictingCol.contains(potentialVal) || row.contains(potentialVal)) {
@@ -324,7 +296,8 @@ public class Board {
                 return potentialValList;
             }
         }
-        return copy;
+        // if we arent able to narrow down the potentialValList to 1, return the original potValList with all possibilities
+        return potentialValList;
     }
 
     /**
@@ -341,8 +314,6 @@ public class Board {
         //Row conflictingRow = this.getRow(index.rowIndex+1);
         Row conflictingRow = this.getRow(convertRowIndexToIndex(index.rowIndex, matNum) +1);
         SubMatrix mat = this.getSubMatrix(matNum);
-        // if we arent able to narrow down the potentialValList to 1, return copy of the original potValList with all possibilities
-        ArrayList<Integer> copy = this.clone(potentialValList);
 
         // remove potential val from the list
         if (conflictingCol.contains(potentialVal) || conflictingRow.contains(potentialVal) || mat.contains(potentialVal)) {
@@ -351,7 +322,8 @@ public class Board {
                 return potentialValList;
             }
         }
-        return copy;
+        // if we arent able to narrow down the potentialValList to 1, return copy of the original potValList with all possibilities
+        return potentialValList;
     }
 
     public static void main(String[] args) {

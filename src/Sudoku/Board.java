@@ -51,49 +51,26 @@ public class Board {
      * @param newNum
      */
     public void updateColumn(int colNum, Column col, int rowNum, int newNum) {
+        //update the column itself
+        this.colArr[colNum] = col;
+        Arrays.fill(col.found, 0, col.found.length, false);
+        col.numSolved++;
+        col.missingNumsIndices.remove(Integer.valueOf(rowNum));
+        col.missingNums.remove(Integer.valueOf(newNum));
+
         //update conflicting row
         Row row = this.rowArr[rowNum];
         row.values[colNum] = newNum;
-        Arrays.fill(row.found, 0, row.found.length, false);
-        row.numSolved = 0;
-        row.missingNumsIndices.clear();
-        row.missingNums.clear();
-        for (int i = 0; i < row.values.length; i++) {
-            int val = row.values[i];
-            if (val != 0)  {
-                row.numSolved++;
-                row.found[val-1] = true;
-            } else {
-                row.missingNumsIndices.add(i);
-            }
-        }
-        for (int i = 0; i < 9; i++) {
-            if (!row.found[i]) row.missingNums.add(i+1);
-        }
+        row.numSolved++;
+        row.missingNumsIndices.remove(Integer.valueOf(colNum));
+        row.missingNums.remove(Integer.valueOf(newNum));
 
         //update the conflicting matrix
         SubMatrix mat = getConflictingMatrix(col, row);
         mat.update(rowNum, colNum, newNum);
         this.matArr[mat.matrixNum] = mat;
 
-        //update the column itself
-        this.colArr[colNum] = col;
-        Arrays.fill(col.found, 0, col.found.length, false);
-        col.numSolved = 0;
-        col.missingNumsIndices.clear();
-        col.missingNums.clear();
-        for (int i = 0; i < col.values.length; i++) {
-            int val = col.values[i];
-            if (val != 0)  {
-                col.numSolved++;
-                col.found[val-1] = true;
-            } else {
-                col.missingNumsIndices.add(i);
-            }
-        }
-        for (int i = 0; i < 9; i++) {
-            if (!col.found[i]) col.missingNums.add(i+1);
-        }
+
     }
 
     // the row passed in here is already updated, no need to update with newNum again
@@ -121,7 +98,7 @@ public class Board {
 
     /**
      *
-     * @param matNum 1-indexed
+     * @param matNum 0-indexed
      * @param mat update matrix
      * @param index indices stored in here are 0-indexed
      */
@@ -132,45 +109,18 @@ public class Board {
 
         // update col in place
         Column col = this.colArr[convertColIndexToIndex(index.colIndex, matNum)];
+        Row row = this.rowArr[convertRowIndexToIndex(index.rowIndex, matNum)];
+
         col.values[convertRowIndexToIndex(index.rowIndex, matNum)] = newNum;
         col.numSolved++;
-        Arrays.fill(col.found, 0, col.found.length, false);
-        col.numSolved = 0;
-        col.missingNumsIndices.clear();
-        col.missingNums.clear();
-        for (int i = 0; i < col.values.length; i++) {
-            int val = col.values[i];
-            if (val != 0)  {
-                col.numSolved++;
-                col.found[val-1] = true;
-            } else {
-                col.missingNumsIndices.add(i);
-            }
-        }
-        for (int i = 0; i < 9; i++) {
-            if (!col.found[i]) col.missingNums.add(i+1);
-        }
+        col.missingNumsIndices.remove(Integer.valueOf(row.rowNum));
+        col.missingNums.remove(Integer.valueOf(newNum));
 
         //update row in place
-        Row row = this.rowArr[convertRowIndexToIndex(index.rowIndex, matNum)];
         row.values[convertColIndexToIndex(index.colIndex, matNum)] = newNum;
-
-        Arrays.fill(row.found, 0, row.found.length, false);
-        row.numSolved = 0;
-        row.missingNumsIndices.clear();
-        row.missingNums.clear();
-        for (int i = 0; i < row.values.length; i++) {
-            int val = row.values[i];
-            if (val != 0)  {
-                row.numSolved++;
-                row.found[val-1] = true;
-            } else {
-                row.missingNumsIndices.add(i);
-            }
-        }
-        for (int i = 0; i < 9; i++) {
-            if (!row.found[i]) row.missingNums.add(i+1);
-        }
+        row.numSolved++;
+        row.missingNumsIndices.remove(Integer.valueOf(col.colNum));
+        row.missingNums.remove(Integer.valueOf(newNum));
     }
 
     public int convertRowIndexToIndex(int rowIndex, int matNum) {

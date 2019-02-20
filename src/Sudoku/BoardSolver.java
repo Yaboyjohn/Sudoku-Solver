@@ -26,21 +26,19 @@ public class BoardSolver {
         int count = 0;
         int attempt = 0;
         instantiateBuckets(buckets, currBoard);
-        while (!validateSolution(currBoard)) {
+        while (buckets[8].size() != 27) {
             boolean foundConfirmedNumber = false;
             count++;
             ArrayList<BoardStruct> minBucket = buckets[fewestRemainingIndex];
-            //printBucket(buckets);
-            //printBoardState(currBoard);
-            //System.out.println("FI: " + fewestRemainingIndex);
             BoardStruct minStruct = minBucket.get(0);
-            //System.out.println(fewestRemainingIndex);
-            //System.out.println("MIN STRUCT: " + minStruct.type + " " + minStruct.num);
-            //printBoardState(currBoard);
             if (minStruct.type == TYPE.ROW) {
                 Row currRow = minStruct.row;
                 ArrayList<Integer> missingNumsList = board.clone(currRow.missingNums);
                 ArrayList<Integer> missingNumsIndicesList = board.clone(currRow.missingNumsIndices);
+
+                //it stalls on puzzles where we can't reduce potentialValsList to 1
+                // invert iterating missingum and missingnUmsINdex
+                // we must have it to do potentialIndexList, same idea but if theres only 1 possible index for that number, we know it goes there
 
                 // for each empty spot, try to place each missing num and check conflicting boardStructs to see if we can confirm placement
                 for (int missingNumsIndex : missingNumsIndicesList) {
@@ -55,10 +53,6 @@ public class BoardSolver {
                             rowToUpdate.values[missingNumsIndex] = potentialValsList.get(0);
                             testBoard.updateRow(currRow.rowNum, rowToUpdate, missingNumsIndex, potentialValsList.get(0));
                             currBoard = testBoard;
-                            //reset the list
-                            missingNumsList = board.clone(currRow.missingNums);
-                            missingNumsList.remove(new Integer(potentialValsList.get(0)));
-                            currRow.missingNums = missingNumsList;
                             break;
                         }
                     }
@@ -85,7 +79,6 @@ public class BoardSolver {
                     instantiateBuckets(buckets, currBoard);
                 }
             } else if (minStruct.type == TYPE.COLUMN) {
-                //printBoardState(currBoard);
                 Column currCol = minStruct.col;
                 ArrayList<Integer> missingNumsList = board.clone(currCol.missingNums);
                 ArrayList<Integer> missingNumsIndicesList = board.clone(currCol.missingNumsIndices);
@@ -104,10 +97,6 @@ public class BoardSolver {
                             Column newCol = new Column(updatedColVals, currCol.colNum);
                             testBoard.updateColumn(currCol.colNum, newCol, i, potentialValsList.get(0));
                             currBoard = testBoard;
-                            //reset the list
-                            missingNumsList = board.clone(currCol.missingNums);
-                            missingNumsList.remove(new Integer(potentialValsList.get(0)));
-                            currCol.missingNums = missingNumsList;
                             break;
                         }
                     }
@@ -145,10 +134,6 @@ public class BoardSolver {
                             mat.update(index.rowIndex, index.colIndex, potentialValsList.get(0));
                             testBoard.updateMat(mat.matrixNum, mat, index, potentialValsList.get(0));
                             currBoard = testBoard;
-                            //reset the list
-                            missingNumsList = board.clone(mat.missingNums);
-                            missingNumsList.remove(new Integer(potentialValsList.get(0)));
-                            mat.missingNums = missingNumsList;
                             break;
                         }
                     }
@@ -174,8 +159,8 @@ public class BoardSolver {
                 }
             }
         }
-        System.out.println("steps: " + count);
-        //printBoardState(currBoard);
+        //System.out.println("steps: " + count);
+        validateSolution(currBoard);
         return currBoard;
     }
 
@@ -184,6 +169,7 @@ public class BoardSolver {
     // CREATE NEW UPDATE BUCKETS FUNCTION THAT GOES IN WHILE LOOP (takes in row/col/mat to update the buckets)
     public void instantiateBuckets(ArrayList<BoardStruct>[] buckets, Board board) {
         Arrays.fill(buckets, null);
+        buckets[8] = new ArrayList<>();
         Row[] rows = board.rowArr;
         Column[] cols = board.colArr;
         SubMatrix[] mats = board.matArr;
@@ -225,14 +211,12 @@ public class BoardSolver {
                 break;
             }
         }
-        //printBoardState(board);
-        //printBucket(buckets);
     }
 
     public int updateFewestRemainingIndex(ArrayList<BoardStruct>[] buckets, int currIndex) {
         while (buckets[currIndex] == null || buckets[currIndex].size() == 0) {
             if (currIndex == 0) {
-                currIndex = 7;
+                currIndex = 8;
             } else {
                 currIndex--;
             }
@@ -241,9 +225,10 @@ public class BoardSolver {
     }
 
     public int findNewFewestRemainingIndex(ArrayList<BoardStruct>[] buckets) {
+        if (fewestRemainingIndex < 0) fewestRemainingIndex = 7;
         while(buckets[fewestRemainingIndex] == null) {
             if (fewestRemainingIndex == 0) {
-                fewestRemainingIndex = 6;
+                fewestRemainingIndex = 7;
             } else {
                 fewestRemainingIndex--;
             }
